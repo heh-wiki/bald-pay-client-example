@@ -1,0 +1,8 @@
+server:
+  port: 8811
+spring:
+  bald-pay:
+    serverUrl: http://127.0.0.1:9060/
+    notifyUrl: http://www.mfeng.net:18811/notifyUrl
+    requestKey: M86l522AV6q613Ii4W6u8K48uW8vM1N6bFgyv769220MdYe9u37N4y7rI5mQ
+    responseKey: Hpcl522AV6q613KIi46u6g6XuW8vM1N8bFgyv769770MdYe9u37M4y7rIpl8
