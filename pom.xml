@@ -24,9 +24,9 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>net.mfeng.pay.api</groupId>
+            <groupId>wiki.heh.api</groupId>
             <artifactId>bald-pay-client</artifactId>
-            <version>1.0.0-SNAPSHOTS</version>
+            <version>0.0.1-SNAPSHOTS</version>
         </dependency>
 
     </dependencies>
