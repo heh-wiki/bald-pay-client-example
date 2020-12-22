@@ -1,18 +1,17 @@
 package wiki.heh.bald.pay.api.example;
-import net.mfeng.pay.api.model.ChannelEnum;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import net.mfeng.pay.api.PayClient;
-import net.mfeng.pay.api.model.AliPayQrParam;
-import net.mfeng.pay.api.model.UnifiedRefundParam;
-import net.mfeng.pay.api.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import wiki.heh.api.PayClient;
+import wiki.heh.api.model.AliPayQrParam;
+import wiki.heh.api.model.ChannelEnum;
+import wiki.heh.api.model.UnifiedRefundParam;
+import wiki.heh.api.model.UnifiedTransferForm;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -22,14 +21,70 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @RestController
 public class TestController {
+    Logger log = LoggerFactory.getLogger(TestController.class);
     @Autowired
     PayClient client;
 
     @PostMapping("notifyUrl")
     public String notifyUrl(@RequestParam Map o) {
-        System.out.println("收到支付中心的回调信息");
-        System.out.println(o.toString());
-        return "success";
+        log.info("********收到支付中心的回调信息********");
+        log.info("回调参数：{}", o.toString());
+        return "success";//收到回调信息需要返回“success”，否则会重复回调5次
+    }
+
+    @GetMapping("aliPayMobile")
+    public String aliPayMobile(String fee) {
+
+            AtomicLong seq = new AtomicLong(0L);
+            String goodsOrderId = String.format("%s%s%06d", "G", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()), (int) seq.getAndIncrement() % 1000000);
+            AliPayQrParam param = new AliPayQrParam();
+            param.setMchId("10000000");
+            param.setMchOrderNo(goodsOrderId);
+            param.setAmount(fee);
+            param.setClientIp("192.168.1.22");
+            param.setDevice("android");
+            param.setSubject("这里是标题");
+            param.setBody("这里是商品介绍呀");
+            String s = client.aliPayMobile(param);
+            System.out.println(s);
+            return s;
+
+    }
+
+    @GetMapping("aliPayQr")
+    public String aliPayQr() {
+        AtomicLong seq = new AtomicLong(0L);
+        String goodsOrderId = String.format("%s%s%06d", "G", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()), (int) seq.getAndIncrement() % 1000000);
+        AliPayQrParam param = new AliPayQrParam();
+        param.setMchId("10000000");
+        param.setMchOrderNo(goodsOrderId);
+        param.setAmount("11110");
+        param.setClientIp("192.168.1.22");
+        param.setDevice("android");
+        param.setSubject("这里是标题");
+        param.setBody("这里是商品介绍呀");
+        String s = client.aliPayQr(param);
+        System.out.println();
+        return s;
+    }
+
+    @GetMapping("aliTransfer")
+    public String aliTransfer() {
+        UnifiedTransferForm param = new UnifiedTransferForm();
+        param.setMchTransNo("T2020122202855213");
+        param.setChannelUser("vkuact5643@sandbox.com");
+        param.setUserName("vkuact5643");
+        param.setRemarkInfo("订餐费用");
+        param.setMchId("10000000");
+        param.setAmount("10");
+        param.setClientIp("192.168.1.22");
+        param.setDevice("android");
+        param.setExtra("");
+        param.setParam1("方芳芳");
+        param.setParam2("");
+        String s = client.aliTransfer(param);
+        System.out.println();
+        return s;
     }
 
     @GetMapping("refund")
@@ -51,45 +106,9 @@ public class TestController {
         return s;
     }
 
-    @GetMapping("test")
-    public String test() {
-        AtomicLong seq = new AtomicLong(0L);
-        String goodsOrderId = String.format("%s%s%06d", "G", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()), (int) seq.getAndIncrement() % 1000000);
-        AliPayQrParam param = new AliPayQrParam();
-        param.setMchId("10000000");
-        param.setMchOrderNo(goodsOrderId);
-        param.setAmount("11110");
-        param.setClientIp("192.168.1.22");
-        param.setDevice("android");
-        param.setSubject("这里是标题");
-        param.setBody("这里是商品介绍呀");
-        String s = client.aliPayQr(param);
-        System.out.println();
-        return s;
-    }
-
-    @PostMapping("test1")
-    public String test11(@RequestBody TestUnifiedPayForm fee) {
-        return aliPayMobile(fee.getFee());
-    }
-
-    @GetMapping("aliPayMobile")
-    public String aliPayMobile(String fee) {
-        if (StringUtil.isNotEmpty(fee)) {
-            AtomicLong seq = new AtomicLong(0L);
-            String goodsOrderId = String.format("%s%s%06d", "G", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()), (int) seq.getAndIncrement() % 1000000);
-            AliPayQrParam param = new AliPayQrParam();
-            param.setMchId("10000000");
-            param.setMchOrderNo(goodsOrderId);
-            param.setAmount(fee);
-            param.setClientIp("192.168.1.22");
-            param.setDevice("android");
-            param.setSubject("这里是标题");
-            param.setBody("这里是商品介绍呀");
-            String s = client.aliPayMobile(param);
-            return s;
-        }
-        return TestResult.file("支付金额不能为空").toString();
-    }
+//    @PostMapping("test1")
+//    public String test11(@RequestBody TestUnifiedPayForm fee) {
+//        return aliPayMobile(fee.getFee());
+//    }
 
 }
