@@ -9,6 +9,7 @@ import wiki.heh.api.model.AliPayQrParam;
 import wiki.heh.api.model.ChannelEnum;
 import wiki.heh.api.model.UnifiedRefundParam;
 import wiki.heh.api.model.UnifiedTransferForm;
+import wiki.heh.api.util.StringUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,7 +35,7 @@ public class TestController {
 
     @GetMapping("aliPayMobile")
     public String aliPayMobile(String fee) {
-
+        if (StringUtil.isNotEmpty(fee)) {
             AtomicLong seq = new AtomicLong(0L);
             String goodsOrderId = String.format("%s%s%06d", "G", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()), (int) seq.getAndIncrement() % 1000000);
             AliPayQrParam param = new AliPayQrParam();
@@ -48,7 +49,8 @@ public class TestController {
             String s = client.aliPayMobile(param);
             System.out.println(s);
             return s;
-
+        }
+        return TestResult.file("支付金额不能为空").toString();
     }
 
     @GetMapping("aliPayQr")
@@ -56,7 +58,7 @@ public class TestController {
         AtomicLong seq = new AtomicLong(0L);
         String goodsOrderId = String.format("%s%s%06d", "G", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()), (int) seq.getAndIncrement() % 1000000);
         AliPayQrParam param = new AliPayQrParam();
-        param.setMchId("10000000");
+        param.setMchId("10000002");
         param.setMchOrderNo(goodsOrderId);
         param.setAmount("11110");
         param.setClientIp("192.168.1.22");
@@ -87,7 +89,7 @@ public class TestController {
         return s;
     }
 
-    @GetMapping("refund")
+ @GetMapping("refund")
     public String refund() {
         UnifiedRefundParam param = new UnifiedRefundParam();
         param.setPayOrderId("P0020201221111507000001");
@@ -106,9 +108,17 @@ public class TestController {
         return s;
     }
 
-//    @PostMapping("test1")
-//    public String test11(@RequestBody TestUnifiedPayForm fee) {
-//        return aliPayMobile(fee.getFee());
-//    }
+
+
+
+
+
+
+    @PostMapping("test1")
+    public String test11(@RequestBody TestUnifiedPayForm fee) {
+        return aliPayMobile(fee.getFee());
+    }
+
+
 
 }
