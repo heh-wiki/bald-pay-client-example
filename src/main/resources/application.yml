@@ -2,10 +2,13 @@ server:
   port: 8811
 spring:
   bald-pay:
+    # 支付服务地址
     serverUrl: http://127.0.0.1:9060
-#    serverUrl: http://zhskg.net/bald-pay
+    # 商户服务地址
+    mgrUrl: http://127.0.0.1:9080
+    #    serverUrl: http://zhskg.net/bald-pay
     notifyUrl: http://www.mfeng.net:18811/notifyUrl
-#    requestKey: 123456
+    #    requestKey: 123456
     requestKey: M86l522AV6q613Ii4W6u8K48uW8vM1N6bFgyv769220MdYe9u37N4y7rI5mQ
-#    responseKey: 654321
+    #    responseKey: 654321
     responseKey: Hpcl522AV6q613KIi46u6g6XuW8vM1N8bFgyv769770MdYe9u37M4y7rIpl8

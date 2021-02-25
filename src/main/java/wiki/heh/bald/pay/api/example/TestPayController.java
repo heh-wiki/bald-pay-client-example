@@ -2,7 +2,6 @@ package wiki.heh.bald.pay.api.example;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,35 +14,34 @@ import wiki.heh.api.util.StringUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * @author hehua
+ * @author heh
  * @date 2020/12/4
  */
 @RestController
-public class TestController {
-    Logger log = LoggerFactory.getLogger(TestController.class);
+public class TestPayController {
+    Logger log = LoggerFactory.getLogger(TestPayController.class);
     @Autowired
     PayClient client;
     private int count = 1;
 
+    /**
+     * 支付中心回调地址
+     *
+     * @param o
+     * @return
+     */
     @PostMapping("notifyUrl")
     public String notifyUrl(@RequestParam Map o) {
         log.info("********收到支付中心的回调信息********");
         log.info("回调参数：{}", o.toString());
-
-        return "f";//收到回调信息需要返回“success”，否则会重复回调5次
+        return "success";//收到回调信息需要返回“success”，否则会重复回调
 
     }
 
-    /*
-
-APPID- wx75ed3155c9bffd9e
-商户号：1520947621
-     */
     @GetMapping("notifyUrl")
     public String notifyUrl1(@RequestParam Map o) {
         log.info("********收到支付中心的回调信息********");
@@ -51,6 +49,12 @@ APPID- wx75ed3155c9bffd9e
         return "success";//收到回调信息需要返回“success”，否则会重复回调5次
     }
 
+    /**
+     * 微信app支付
+     *
+     * @param fee
+     * @return
+     */
     @GetMapping("wxPayMobile")
     public JSONObject wxPayMobile(String fee) {
         if (StringUtil.isNotEmpty(fee)) {
@@ -76,6 +80,12 @@ APPID- wx75ed3155c9bffd9e
         return null;
     }
 
+    /**
+     * 支付宝app支付
+     *
+     * @param fee
+     * @return
+     */
     @GetMapping("aliPayMobile")
     public String aliPayMobile(String fee) {
         if (StringUtil.isNotEmpty(fee)) {
@@ -93,9 +103,15 @@ APPID- wx75ed3155c9bffd9e
             System.out.println(s);
             return s;
         }
-        return TestResult.file("支付金额不能为空").toString();
+        return "支付金额不能为空";
+//        return TestResult.file("支付金额不能为空").toString();
     }
 
+    /**
+     * 支付宝二维码支付
+     *
+     * @return
+     */
     @GetMapping("aliPayQr")
     public String aliPayQr() {
         AtomicLong seq = new AtomicLong(0L);
@@ -113,6 +129,11 @@ APPID- wx75ed3155c9bffd9e
         return s;
     }
 
+    /**
+     * 微信二维码支付
+     *
+     * @return
+     */
     @GetMapping("wxPayQr")
     public String wxPayQr() {
         AtomicLong seq = new AtomicLong(0L);
@@ -133,6 +154,11 @@ APPID- wx75ed3155c9bffd9e
         return s;
     }
 
+    /**
+     * 微信小程序支付
+     *
+     * @return
+     */
     @GetMapping("wxPayJsApi")
     public String wxPayJsApi() {
         AtomicLong seq = new AtomicLong(0L);
@@ -153,6 +179,11 @@ APPID- wx75ed3155c9bffd9e
         return s;
     }
 
+    /**
+     * 支付宝小程序支付
+     *
+     * @return
+     */
     @GetMapping("aliPayJsApi")
     public String aliPayTrade() {
         AtomicLong seq = new AtomicLong(0L);
@@ -173,6 +204,11 @@ APPID- wx75ed3155c9bffd9e
         return s;
     }
 
+    /**
+     * 支付宝交易转账
+     *
+     * @return
+     */
     @GetMapping("aliTransfer")
     public String aliTransfer() {
         UnifiedTransferForm param = new UnifiedTransferForm();
@@ -195,6 +231,11 @@ APPID- wx75ed3155c9bffd9e
         return s;
     }
 
+    /**
+     * 支付订单退款
+     *
+     * @return
+     */
     @GetMapping("refund")
     public String refund() {
         UnifiedRefundParam param = new UnifiedRefundParam();
@@ -218,15 +259,15 @@ APPID- wx75ed3155c9bffd9e
     }
 
 
-    @PostMapping("wx")
-    public Object wx(@RequestBody TestUnifiedPayForm fee) {
-        return wxPayMobile(fee.getFee());
-    }
-
-    @PostMapping("ali")
-    public Object ali(@RequestBody TestUnifiedPayForm fee) {
-        return aliPayMobile(fee.getFee());
-    }
+//    @PostMapping("wx")
+//    public Object wx(@RequestBody TestUnifiedPayForm fee) {
+//        return wxPayMobile(fee.getFee());
+//    }
+//
+//    @PostMapping("ali")
+//    public Object ali(@RequestBody TestUnifiedPayForm fee) {
+//        return aliPayMobile(fee.getFee());
+//    }
 
 
 }
