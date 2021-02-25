@@ -26,7 +26,7 @@
         <dependency>
             <groupId>wiki.heh.api</groupId>
             <artifactId>bald-pay-client</artifactId>
-            <version>1.0.0-SNAPSHOTS</version>
+            <version>1.0.0-RELEASE</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
         <dependency>
