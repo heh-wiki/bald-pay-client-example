@@ -53,6 +53,11 @@ public class MgrTestController {
         return s;
     }
 
+    /**
+     * 获取商户信息
+     *
+     * @return
+     */
     @GetMapping("get")
     public Object getMgr() {
         String s = client.getMchInfo("10000004");
